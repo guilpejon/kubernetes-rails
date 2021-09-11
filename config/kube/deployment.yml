@@ -23,3 +23,8 @@ spec:
             secretKeyRef:
               name: rails-secrets
               key: rails_master_key
+        - name: RAILS_LOG_TO_STDOUT
+          valueFrom:
+            secretKeyRef:
+              name: rails-secrets
+              key: rails_log_to_stdout

@@ -55,7 +55,14 @@ kubectl delete --all pods
 
 # get the value from config/master.key
 # important to run this after the pod is alive
-kubectl create secret generic rails-secrets --from-literal=rails_master_key='example'
+kubectl create secret generic rails-secrets --from-literal=rails_master_key=example
+# then we have to edit the deployment file with this
+# env:
+# - name: RAILS_MASTER_KEY
+#   valueFrom:
+#     secretKeyRef:
+#       name: rails-secrets
+#       key: rails_master_key
 
 ###############
 # CLEANING UP #
@@ -66,3 +73,15 @@ kubectl get pods,services,deployments
 
 # delete all pods, services and deployments
 kubectl delete pods,services,deployments --all
+
+###########
+# LOGGING #
+###########
+
+# after setting RAILS_LOG_TO_STDOUT to enabled run the following
+kubectl logs -l app=rails-app
+
+# to make the logs searchable and persistent we can use logz.io
+# this method uses fluentd to work: https://github.com/fluent/fluentd-kubernetes-daemonset
+kubectl create secret generic logzio-logs-secret --from-literal=logzio-log-shipping-token='MY_LOGZIO_TOKEN' --from-literal=logzio-log-listener='MY_LOGZIO_URL' -n kube-system
+kubectl apply -f https://raw.githubusercontent.com/logzio/logzio-k8s/master/logzio-daemonset-rbac.yaml
