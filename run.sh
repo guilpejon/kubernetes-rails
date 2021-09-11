@@ -48,3 +48,21 @@ kubectl describe service service-name
 
 # fix configurations and regenerate the pods
 kubectl delete --all pods
+
+###########
+# SECRETS #
+###########
+
+# get the value from config/master.key
+# important to run this after the pod is alive
+kubectl create secret generic rails-secrets --from-literal=rails_master_key='example'
+
+###############
+# CLEANING UP #
+###############
+
+# get all pods, services and deployments
+kubectl get pods,services,deployments
+
+# delete all pods, services and deployments
+kubectl delete pods,services,deployments --all
